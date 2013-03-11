@@ -1,6 +1,7 @@
 // Fractional-N synthesizer setup
 // This code is based off of the PiFm and Pihat projects
 // by Oliver Mattos, Oskar Weigl, and Jon Petter Skagmo
+// Application-specific modifications made by Ian Daniher
 
 #include "radio.h"
 
@@ -118,19 +119,5 @@ void sendStringAsk(char *string, int sleep){
 	int length = strlen(string);
 	for (int i = 0; i < length; i++){
 		sendByteAsk(string[i], sleep);
-	}
-}
-
-void sendByteFsk(unsigned char byte, int sleep, int divider , int spread){
-	for (int i = 0; i < 8; i++){
-		int symbol = ((byte >> i) & 0b1);
-		askLow();
-		ACCESS(CM_GP0DIV) = (0x5a << 24) + divider + spread*(1<<12)*(symbol+1);
-		askHigh();
-		usleep2(sleep);
-		askLow();
-		ACCESS(CM_GP0DIV) = (0x5a << 24) + divider+spread*(1<<12);
-		askHigh();
-		usleep2(sleep);
 	}
 }
