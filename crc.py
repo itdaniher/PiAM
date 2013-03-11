@@ -16,4 +16,5 @@ def crc32(string, crc=0xFFFFFFFF, table = genTable()):
 		crc = table[(crc&0xFF)^ord(string[i])] ^ (crc >> 8)
 	return 0xFFFFFFFF^crc
 
-print hex(crc32("The quick brown fox jumps over the lazy dog"))
+if __name__ == "__main__":
+	print hex(crc32("The quick brown fox jumps over the lazy dog"))
