@@ -19,8 +19,11 @@
 #include <sys/mman.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <time.h>
 
-void setup_fm(){
+void usleep2(unsigned int us) {nanosleep((struct timespec[]){{0, us*1000}}, NULL);};
+
+void setup_fm(float frequency){
     allof7e = (unsigned *)mmap(
                   NULL,
                   0x01000000,  //len
@@ -39,6 +42,8 @@ void setup_fm(){
     struct GPCTL setupword = {6/*SRC*/, 1, 0, 0, 0, 1,0x5a};
 
     ACCESS(CM_GP0CTL) = *((int*)&setupword);
+    int divider = (int)((500.0 / frequency) * (float)(1<<12))-512; 
+    ACCESS(CM_GP0DIV) = (0x5a << 24) + divider;
 }
 
 //
@@ -92,4 +97,20 @@ void askHigh(){
 void askLow(){
 	struct GPCTL setupword = {6/*SRC*/, 0, 0, 0, 0, 1,0x5a};	// Set CM_GP0CTL.ENABLE to 0
     ACCESS(CM_GP0CTL) = *((int*)&setupword);
+}
+
+/* added functions to do simple ASK transmit of a single byte, using 100us for the bitlength */
+
+void sendByteAsk(unsigned char byte){
+	for (int i = 0; i++; i < 8){
+		if ((byte&(1 << i)>>i) == 1){
+			askHigh();
+			usleep2(100);
+			askLow();
+		}
+		else {
+			askLow();
+			usleep2(100);
+		}
+	}
 }

@@ -47,8 +47,8 @@ struct GPCTL {
     char PASSWD      : 8;
 };
 
-void setup_fm();
+void setup_fm(float frequency);
 void askHigh();
 void askLow();
-
+void sendByteAsk(unsigned char byte);
 #endif

@@ -1,2 +1,5 @@
-all: main.c nexa.c status.c radio.c
-	$(CROSS_COMPILE)gcc $(CFLAGS) -s -lm -std=c99 -o pihat main.c nexa.c status.c radio.c
+radio: radio.c
+	gcc -c -fPIC -lm -std=c99 radio.c -D _POSIX_C_SOURCE=200809L
+	gcc -shared radio.o -o radio.so
+clean:
+	rm radio.o radio.so
