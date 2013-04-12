@@ -1,0 +1,7 @@
+PiAM
+
+This is based off of the original [pihat](http://www.skagmo.com/page.php?p=projects/22_pihat) project, which turned the 'Pi into an ASK / PAM transceiver for home automation.
+
+This project is comprised of the "radio" C files which wrap timing-critical application logic in a manner suitable for Python use.
+
+"test.py" uses the exposed functions to transmit "hello world" via ASK (or FSK, currently dysfunctional) with a symbol width of 100000uS.

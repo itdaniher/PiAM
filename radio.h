@@ -1,8 +1,8 @@
 #ifndef _RADIO_H_
 #define _RADIO_H_
 
-#define BCM2708_PERI_BASE        0x20000000
-#define GPIO_BASE                (BCM2708_PERI_BASE + 0x200000) /* GPIO controller */
+#define BCM2708_PERI_BASE	0x20000000
+#define GPIO_BASE	(BCM2708_PERI_BASE + 0x200000) /* GPIO controller */
 
 #define PAGE_SIZE (4*1024)
 #define BLOCK_SIZE (4*1024)
@@ -36,19 +36,20 @@ void setup_io();
 #define DMABASE (0x7E007000)
 
 struct GPCTL {
-    char SRC         : 4;
-    char ENAB        : 1;
-    char KILL        : 1;
-    char             : 1;
-    char BUSY        : 1;
-    char FLIP        : 1;
-    char MASH        : 2;
-    unsigned int     : 13;
-    char PASSWD      : 8;
+    char SRC	: 4;
+    char ENAB	: 1;
+    char KILL	: 1;
+    char	: 1;
+    char BUSY	: 1;
+    char FLIP	: 1;
+    char MASH	: 2;
+    unsigned int	: 13;
+    char PASSWD	: 8;
 };
 
-void setup_fm(float frequency);
+void setup_fm(int divider);
 void askHigh();
 void askLow();
-void sendByteAsk(unsigned char byte);
+void sendByteAsk(unsigned char byte, int sleep);
+void sendByteFsk(unsigned char byte, int sleep, int divider , int spread);
 #endif
