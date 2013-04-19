@@ -16,7 +16,7 @@
 #include <sys/stat.h>
 #include <time.h>
 
-void usleep2(unsigned int us) {nanosleep((struct timespec[]){{0, us*1000}}, NULL);};
+void usleep2(long us) {nanosleep((struct timespec[]){{0, us*1000}}, NULL);};
 
 //
 // Set up a memory regions to access GPIO
@@ -97,18 +97,18 @@ void askLow(){
 }
 
 void sendByteAsk(unsigned char byte, int sleep){
-	for (int i = 0; i < 8; i++){
-		if (byte&(1 << i) > 0){
+	for (unsigned char i = 0; i < 8; i++){
+		if ((byte&(1 << i)) > 0){
 			askHigh();
-			usleep2(sleep*3/2);
+			usleep2(sleep*2);
 			askLow();
-			usleep2(sleep/2);
+			usleep2(sleep);
 		}
-		else {
+		else if ((byte&(1 << i)) == 0) {
 			askLow();
-			usleep2(sleep*3/2);
+			usleep2(sleep*2);
 			askHigh();
-			usleep2(sleep/2);
+			usleep2(sleep);
 			askLow();
 		}
 	}

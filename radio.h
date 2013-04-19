@@ -47,6 +47,7 @@ struct GPCTL {
     char PASSWD	: 8;
 };
 
+void usleep2(long us);
 void setup_fm(int divider);
 void askHigh();
 void askLow();
