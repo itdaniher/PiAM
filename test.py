@@ -15,7 +15,5 @@ while True:
 	for letter in "hello world":
 		# byte, mark
 		r.sendByteAsk(c_ubyte(ord(letter)), c_int(1000))
-		# byte, mark, base divider, spread
-		#r.sendByteFsk(c_ubyte(ord(letter)), c_int(100000), div(144.5), c_int(10000))
 		print letter, bin(ord(letter))
-	time.sleep(1)
+	time.sleep(.5)

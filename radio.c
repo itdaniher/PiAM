@@ -99,17 +99,16 @@ void askLow(){
 void sendByteAsk(unsigned char byte, int sleep){
 	for (unsigned char i = 0; i < 8; i++){
 		if ((byte&(1 << i)) > 0){
-			askHigh();
-			usleep2(sleep*2);
 			askLow();
+			usleep2(sleep);
+			askHigh();
 			usleep2(sleep);
 		}
 		else if ((byte&(1 << i)) == 0) {
-			askLow();
-			usleep2(sleep*2);
 			askHigh();
 			usleep2(sleep);
 			askLow();
+			usleep2(sleep);
 		}
 	}
 }
