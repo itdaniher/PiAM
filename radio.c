@@ -111,6 +111,7 @@ void sendByteAsk(unsigned char byte, int sleep){
 			usleep2(sleep);
 		}
 	}
+	askLow();
 }
 
 void sendByteFsk(unsigned char byte, int sleep, int divider , int spread){
