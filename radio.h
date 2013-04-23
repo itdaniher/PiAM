@@ -52,5 +52,6 @@ void setup_fm(int divider);
 void askHigh();
 void askLow();
 void sendByteAsk(unsigned char byte, int sleep);
+void sendStringAsk(char *string, int sleep);
 void sendByteFsk(unsigned char byte, int sleep, int divider , int spread);
 #endif

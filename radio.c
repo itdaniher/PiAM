@@ -97,7 +97,7 @@ void askLow(){
 }
 
 void sendByteAsk(unsigned char byte, int sleep){
-	for (unsigned char i = 0; i < 8; i++){
+	for (char i = 0; i < 8; i++){
 		if ((byte&(1 << i)) > 0){
 			askLow();
 			usleep2(sleep);
@@ -112,6 +112,13 @@ void sendByteAsk(unsigned char byte, int sleep){
 		}
 	}
 	askLow();
+}
+
+void sendStringAsk(char *string, int sleep){
+	int length = strlen(string);
+	for (int i = 0; i < length; i++){
+		sendByteAsk(string[i], sleep);
+	}
 }
 
 void sendByteFsk(unsigned char byte, int sleep, int divider , int spread){
