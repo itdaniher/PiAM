@@ -10,8 +10,9 @@ def genTable():
 		table.append(word)
 	return table
 		
+table = genTable()
 
-def crc32(string, crc=0xFFFFFFFF, table = genTable()):
+def crc32(string, crc=0xFFFFFFFF):
 	for i in range(len(string)):
 		crc = table[(crc&0xFF)^ord(string[i])] ^ (crc >> 8)
 	return 0xFFFFFFFF^crc

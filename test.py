@@ -33,6 +33,7 @@ while True:
 	r.askLow()
 	channel, details = triggerSocket.accept()
 	sym = channel.recv(1)
+	print ord(sym)
 	time.sleep(0.05)
-	sendMessage("hello world", sym)
+	sendMessage("hello world"*10, sym)
 	channel.close()

@@ -15,14 +15,64 @@
 #include <sys/mman.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/time.h>
 #include <time.h>
+#include <sched.h>
+
+# define timerisset(tvp)        ((tvp)->tv_sec || (tvp)->tv_usec)
+# define timerclear(tvp)        ((tvp)->tv_sec = (tvp)->tv_usec = 0)
+# define timercmp(a, b, CMP)                                                  \
+  (((a)->tv_sec == (b)->tv_sec) ?                                             \
+   ((a)->tv_usec CMP (b)->tv_usec) :                                          \
+   ((a)->tv_sec CMP (b)->tv_sec))
+# define timeradd(a, b, result)                                               \
+  do {                                                                        \
+    (result)->tv_sec = (a)->tv_sec + (b)->tv_sec;                             \
+    (result)->tv_usec = (a)->tv_usec + (b)->tv_usec;                          \
+    if ((result)->tv_usec >= 1000000)                                         \
+      {                                                                       \
+        ++(result)->tv_sec;                                                   \
+        (result)->tv_usec -= 1000000;                                         \
+      }                                                                       \
+  } while (0)
+# define timersub(a, b, result)                                               \
+  do {                                                                        \
+    (result)->tv_sec = (a)->tv_sec - (b)->tv_sec;                             \
+    (result)->tv_usec = (a)->tv_usec - (b)->tv_usec;                          \
+    if ((result)->tv_usec < 0) {                                              \
+      --(result)->tv_sec;                                                     \
+      (result)->tv_usec += 1000000;                                           \
+    }                                                                         \
+  } while (0)
+
 
 void usleep2(long us) {nanosleep((struct timespec[]){{0, us*1000}}, NULL);};
+
+void delayMicrosecondsHard (unsigned int howLong) {
+  struct timeval tNow, tLong, tEnd ;
+
+  gettimeofday (&tNow, NULL) ;
+  tLong.tv_sec  = howLong / 1000000 ;
+  tLong.tv_usec = howLong % 1000000 ;
+  timeradd (&tNow, &tLong, &tEnd) ;
+
+  while (timercmp (&tNow, &tEnd, <))
+    gettimeofday (&tNow, NULL) ;
+}
 
 //
 // Set up a memory regions to access GPIO
 //
 void setup_io(){
+
+
+  struct sched_param sp;
+  memset(&sp, 0, sizeof(sp));
+  sp.sched_priority = sched_get_priority_max(SCHED_FIFO);
+  sched_setscheduler(0, SCHED_FIFO, &sp);
+  mlockall(MCL_CURRENT | MCL_FUTURE);
+
+
 	/* open /dev/mem */
 	if ((mem_fd = open("/dev/mem", O_RDWR|O_SYNC) ) < 0) {
 		printf("can't open /dev/mem \n");
@@ -101,15 +151,19 @@ void sendByteAsk(unsigned char byte, int sleep){
 	for (char i = 0; i < 8; i++){
 		if ((byte&(1 << i)) > 0){
 			askLow();
-			usleep2(sleep);
+			delayMicrosecondsHard(sleep);
+			//usleep2(sleep);
 			askHigh();
-			usleep2(sleep);
+			delayMicrosecondsHard(sleep);
+			//usleep2(sleep);
 		}
 		else if ((byte&(1 << i)) == 0) {
 			askHigh();
-			usleep2(sleep);
+			delayMicrosecondsHard(sleep);
+			//usleep2(sleep);
 			askLow();
-			usleep2(sleep);
+			delayMicrosecondsHard(sleep);
+			//usleep2(sleep);
 		}
 	}
 	askLow();
